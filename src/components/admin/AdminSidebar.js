@@ -1,11 +1,9 @@
-import { useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Car, CalendarCheck, Users, BarChart3, DollarSign, Settings,
   LogOut, ExternalLink, X,
 } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const links = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
@@ -17,23 +15,9 @@ const links = [
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-const pageMeta = {
-  "/admin": { title: "Dashboard Overview", subtitle: "Platform metrics and live fleet status" },
-  "/admin/fleet": { title: "Fleet Management", subtitle: "Manage vehicles, status, and availability" },
-  "/admin/bookings": { title: "Bookings", subtitle: "View and manage all customer bookings" },
-  "/admin/users": { title: "Users", subtitle: "Manage users, KYC, and access" },
-  "/admin/reports": { title: "Reports & Analytics", subtitle: "Revenue, utilization, and performance" },
-  "/admin/pricing": { title: "Pricing & Rules", subtitle: "Manage vehicle pricing and discount rules" },
-  "/admin/settings": { title: "Settings", subtitle: "Company, policies, and security" },
-};
-
-export default function AdminLayout() {
+export default function AdminSidebar({ open, onClose }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [open, setOpen] = useState(false);
-
-  const meta = pageMeta[location.pathname] || { title: "Admin", subtitle: "" };
 
   const handleLogout = () => {
     logout();
@@ -41,11 +25,8 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-ink-50">
-      {/* Mobile overlay */}
-      {open && <div className="fixed inset-0 z-[90] bg-ink-900/60 backdrop-blur-sm lg:hidden" onClick={() => setOpen(false)} />}
-
-      {/* Sidebar */}
+    <>
+      {open && <div className="fixed inset-0 z-[90] bg-ink-900/60 backdrop-blur-sm lg:hidden" onClick={onClose} />}
       <aside
         className={`fixed top-0 left-0 bottom-0 z-[91] w-64 bg-[#0f172a] text-white flex flex-col transition-transform duration-300 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
@@ -61,7 +42,7 @@ export default function AdminLayout() {
               <p className="text-[10px] text-white/50 uppercase tracking-wider">Admin Panel</p>
             </div>
           </div>
-          <button onClick={() => setOpen(false)} className="lg:hidden p-1 rounded-lg hover:bg-white/10">
+          <button onClick={onClose} className="lg:hidden p-1 rounded-lg hover:bg-white/10">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -72,7 +53,7 @@ export default function AdminLayout() {
               key={l.to}
               to={l.to}
               end={l.end}
-              onClick={() => setOpen(false)}
+              onClick={onClose}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   isActive
@@ -88,12 +69,13 @@ export default function AdminLayout() {
         </nav>
 
         <div className="px-3 py-4 border-t border-white/10 space-y-1">
-          <button
-            onClick={() => navigate("/")}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-all"
+          <Link
+            to="/"
+            onClick={onClose}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-all"
           >
             <ExternalLink className="h-[18px] w-[18px]" /> View Site
-          </button>
+          </Link>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-error-400 hover:text-error-300 hover:bg-error-500/10 transition-all"
@@ -111,27 +93,6 @@ export default function AdminLayout() {
           </div>
         </div>
       </aside>
-
-      {/* Main content */}
-      <div className="lg:pl-64">
-        {/* Header */}
-        <header className="sticky top-0 z-[80] bg-white border-b border-ink-100 px-4 sm:px-6 py-3.5 flex items-center gap-3">
-          <button onClick={() => setOpen(true)} className="lg:hidden p-2 rounded-lg text-ink-600 hover:bg-ink-50">
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold text-ink-900 leading-tight truncate">{meta.title}</h1>
-            {meta.subtitle && <p className="text-xs text-ink-500 mt-0.5 truncate hidden sm:block">{meta.subtitle}</p>}
-          </div>
-          <button className="relative p-2 rounded-lg text-ink-600 hover:bg-ink-50">
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-error-500" />
-          </button>
-        </header>
-
-        {/* Page content */}
-        <Outlet />
-      </div>
-    </div>
+    </>
   );
 }

@@ -24,10 +24,13 @@ import MyBookings from "./pages/MyBookings";
 import BookingDetailsView from "./pages/BookingDetailsView";
 import UserVerification from "./pages/UserVerification";
 import AdminLayout from "./pages/AdminLayout";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminCars from "./pages/AdminCars";
-import AdminUsers from "./pages/AdminUsers";
-import AdminBookings from "./pages/AdminBookings";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminFleet from "./pages/admin/Fleet";
+import AdminBookings from "./pages/admin/Bookings";
+import AdminUsers from "./pages/admin/Users";
+import AdminReports from "./pages/admin/Reports";
+import AdminPricing from "./pages/admin/Pricing";
+import AdminSettings from "./pages/admin/Settings";
 import AdminVerification from "./pages/AdminVerification";
 
 // Public layout: navbar + footer wrapping public pages
@@ -73,9 +76,12 @@ export default function App() {
             {/* Admin dashboard */}
             <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
               <Route index element={<AdminDashboard />} />
-              <Route path="cars" element={<AdminCars />} />
-              <Route path="users" element={<AdminUsers />} />
+              <Route path="fleet" element={<AdminFleet />} />
               <Route path="bookings" element={<AdminBookings />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="pricing" element={<AdminPricing />} />
+              <Route path="settings" element={<AdminSettings />} />
               <Route path="verification" element={<AdminVerification />} />
             </Route>
 
